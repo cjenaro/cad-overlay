@@ -1,26 +1,77 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useRef } from "react";
+import { useSpring, useChain, animated } from "react-spring"
 
-function App() {
+export default function App() {
+  const divAnim = useRef()
+  const props = useSpring({
+    config: {
+      tension: 500
+    },
+    opacity: 1,
+    transform: "scale(1.5)",
+    from: {
+      opacity: 0,
+      transform: "scale(1)"
+    },
+    ref: divAnim
+  });
+
+  const forAnim = useRef()
+  const forStyles = useSpring({
+    config: {
+      tension: 500
+    },
+    backgroundSize: "100% 15%",
+    opacity: 0.5,
+    from: {
+      backgroundSize: "0% 15%",
+      opacity: 1,
+    },
+    ref: forAnim
+  });
+
+  const andAnim = useRef();
+  const andStyles = useSpring({
+    config: {
+      tension: 500
+    },
+    opacity: 1,
+    transform: "scale(1.1) rotate(-5deg)",
+    from: {
+      opacity: 0,
+      transform: "scale(1.5) rotate(0deg)",
+    },
+    ref: andAnim
+  });
+
+  const fadeOutAnim = useRef();
+  const fadeOutStyles = useSpring({
+    config: {
+      tension: 200
+    },
+    opacity: 0,
+    from: {
+      opacity: 1
+    },
+    ref: fadeOutAnim
+  });
+  
+  useChain([divAnim, forAnim, andAnim, fadeOutAnim])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <animated.div style={{...props, ...fadeOutStyles}}>
+      <h1>
+        <p id="coding">Coding</p>
+        <span id="container">
+        <animated.span style={forStyles} id="for">
+          for
+        </animated.span>
+        <animated.span id="and" style={andStyles}>
+          and
+        </animated.span>
+        </span>
+        <p id="dummies">Dummies</p>
+      </h1>
+    </animated.div>
   );
 }
-
-export default App;
