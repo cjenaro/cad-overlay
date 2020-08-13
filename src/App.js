@@ -1,77 +1,81 @@
-import React, { useRef } from "react";
-import { useSpring, useChain, animated } from "react-spring"
+/** @jsx jsx */
+import { css, jsx } from "@filbert-js/core";
+import { useState } from "react";
+import { useSpring, config, animated } from "react-spring";
+import Entrance from "./Entrance";
+import image from "./bg-image.png";
 
 export default function App() {
-  const divAnim = useRef()
-  const props = useSpring({
-    config: {
-      tension: 500
-    },
+  const [entering, setEntering] = useState(true);
+  const fadeIn = useSpring({
     opacity: 1,
-    transform: "scale(1.5)",
     from: {
       opacity: 0,
-      transform: "scale(1)"
     },
-    ref: divAnim
+    config: config.molasses,
   });
-
-  const forAnim = useRef()
-  const forStyles = useSpring({
-    config: {
-      tension: 500
-    },
-    backgroundSize: "100% 15%",
-    opacity: 0.5,
-    from: {
-      backgroundSize: "0% 15%",
-      opacity: 1,
-    },
-    ref: forAnim
-  });
-
-  const andAnim = useRef();
-  const andStyles = useSpring({
-    config: {
-      tension: 500
-    },
-    opacity: 1,
-    transform: "scale(1.1) rotate(-5deg)",
-    from: {
-      opacity: 0,
-      transform: "scale(1.5) rotate(0deg)",
-    },
-    ref: andAnim
-  });
-
-  const fadeOutAnim = useRef();
-  const fadeOutStyles = useSpring({
-    config: {
-      tension: 200
-    },
-    opacity: 0,
-    from: {
-      opacity: 1
-    },
-    ref: fadeOutAnim
-  });
-  
-  useChain([divAnim, forAnim, andAnim, fadeOutAnim])
-
-  return (
-    <animated.div style={{...props, ...fadeOutStyles}}>
-      <h1>
-        <p id="coding">Coding</p>
-        <span id="container">
-        <animated.span style={forStyles} id="for">
-          for
-        </animated.span>
-        <animated.span id="and" style={andStyles}>
-          and
-        </animated.span>
-        </span>
-        <p id="dummies">Dummies</p>
-      </h1>
+  return entering ? (
+    <Entrance onFinish={() => setEntering(false)} />
+  ) : (
+    <animated.div
+      style={fadeIn}
+      css={css`
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url(${image});
+      `}
+    >
+      <header
+        css={css`
+          background-color: var(--yellow);
+          color: var(--black);
+          padding: 1rem 2rem;
+          margin-bottom: 1rem;
+        `}
+      >
+        <h1
+          css={css`
+            margin: 0;
+          `}
+        >
+          Coding and Dummies
+        </h1>
+      </header>
+      <main
+        css={css`
+          display: grid;
+          grid-template-columns: repeat(12, 1fr);
+          grid-template-rows: repeat(2, 1fr);
+          grid-gap: 60px;
+          height: calc(100% - 5rem);
+          padding: 3rem;
+        `}
+      >
+        <div
+          css={css`
+            grid-column: 1/5;
+            grid-row: 1/2;
+            border: 2px solid var(--yellow);
+          `}
+        ></div>
+        <div
+          css={css`
+            grid-column: 1/5;
+            grid-row: 2/3;
+            border: 2px solid var(--yellow);
+          `}
+        ></div>
+        <div
+          css={css`
+            grid-column: 5/13;
+            grid-row: 1/3;
+            border: 2px solid var(--yellow);
+          `}
+        ></div>
+      </main>
     </animated.div>
   );
 }
